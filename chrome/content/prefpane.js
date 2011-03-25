@@ -43,16 +43,73 @@ var acPlugins = {
 	Process: Components.Constructor('@mozilla.org/process/util;1', 'nsIProcess', 'init'),
 	
 	init: function acPL_init() {
-		this._pane = document.getElementById('acPane');
-		this._pref = document.getElementById('acPrefPlugins');
-		this._list = document.getElementById('acListPlugins');
+		this._pane = $('acPane');
+		this._pref = $('acPrefPlugins');
+		this._list = $('acListPlugins');
 		
 		Components.utils.import('resource://dtaac/plugins.jsm', this._plugins);
 
+		this.initListeners(this);
 		this.reload();
 		Preferences.makeObserver(this);
 		Cc['@mozilla.org/observer-service;1'].getService(Ci.nsIObserverService).addObserver(this, this._plugins.TOPIC_PLUGINSCHANGED, true);
 		this.init = function() {};
+	},
+	initListeners: function(self) {
+		this._list.addEventListener('select', function() {
+			let item = self._list.selectedItem;
+			$('acCmdPluginActivate').setAttribute('disabled', item.activated);
+			$('acCmdPluginDeactivate').setAttribute('disabled', !item.activated);
+			$('acCmdPluginUninstall').setAttribute('disabled', item.getAttribute('managed') == 'true');
+			$('acCmdPluginEditSource').setAttribute('disabled', item.getAttribute('managed') == 'true');
+		}, false);
+		$('acCmdPluginActivate').addEventListener('command', function(event) {
+			let item = self._list.selectedItem;
+			if (!item.activated) {
+				item.activated = true;
+				let event = document.createEvent('Events');
+				event.initEvent('change', true, true);
+				item.dispatchEvent(event);
+				$('acCmdPluginActivate').setAttribute('disabled', item.activated);
+				$('acCmdPluginDeactivate').setAttribute('disabled', !item.activated);
+			}
+		}, false);
+		$('acCmdPluginDeactivate').addEventListener('command', function(event) {
+			let item = self._list.selectedItem;
+			if (item.activated) {
+				item.activated = false;
+				let event = document.createEvent('Events');
+				event.initEvent('change', true, true);
+				item.dispatchEvent(event);
+				$('acCmdPluginActivate').setAttribute('disabled', item.activated);
+				$('acCmdPluginDeactivate').setAttribute('disabled', !item.activated);
+			}
+		}, false);
+		$('acCmdPluginUninstall').addEventListener('command', function(event) {
+			let item = self._list.selectedItem;
+			if (item.getAttribute('managed') != 'true') {
+				if (!Prompts.confirmYN(window, _('ac-pluginuninstalltitle'), _('ac-pluginuninstallquestion'))) {
+					self._plugins.uninstallPlugin(item.getAttribute('plugin'));
+					Prompts.alert(window, _('ac-pluginuninstalltitle'), _('ac-pluginuninstalled'));
+				}
+			}
+		}, false);
+		$('acCmdPluginShowSource').addEventListener('command', function(event) {
+			let item = self._list.selectedItem;
+			let m = ('DTA_Mediator' in window) ? DTA_Mediator : DTA.Mediator;
+			if (item.getAttribute('file')) {
+				m.open('file://' + item.getAttribute('file'));
+			}
+			else {
+				m.open('data:text/plain,' + item.getAttribute('source'));
+			}
+		}, false);
+		$('acCmdPluginEditSource').addEventListener('command', function(event) {
+			let item = self._list.selectedItem;
+			if (item.getAttribute('file')) {
+				self.showInEditor(item.getAttribute('file'));
+			}
+		}, false);
 	},
 	reload: function() {
 		function zeropad (s, l) {

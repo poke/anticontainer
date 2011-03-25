@@ -49,19 +49,20 @@
 		<stringbundleset id="bundlesPrefs">
 			<stringbundle src="chrome://dtaac/locale/prefpane.properties" />
 		</stringbundleset>
-		<prefpane
-			id="acPane"
-			flex="1"
-			label="&ac.panetitle;"
-		>
+
+		<commandset>
+			<command id="acCmdPluginActivate" />
+			<command id="acCmdPluginDeactivate" />
+			<command id="acCmdPluginUninstall" />
+			<command id="acCmdPluginShowSource" />
+			<command id="acCmdPluginEditSource" />
+		</commandset>
+
+		<prefpane id="acPane" flex="1" label="&ac.panetitle;">
 			<script type="text/javascript" src="chrome://dtaac/content/prefpane.js"/>
 			
 			<preferences>
-				<preference
-					id="acPrefPlugins"
-					name="extensions.dta.anticontainer.disabled_plugins"
-					type="string"
-					/>
+				<preference id="acPrefPlugins" name="extensions.dta.anticontainer.disabled_plugins" type="string" />
 			</preferences>
 			
 			<deck flex="1" id="acPluginsDeck">

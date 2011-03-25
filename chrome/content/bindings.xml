@@ -125,7 +125,6 @@
 	<binding id="acplugin-selected" extends="chrome://dtaac/content/bindings.xml#acplugin-base">
 		<implementation>
 			<field name="_btnEdit">document.getAnonymousElementByAttribute(this, 'anonid', 'btnedit');</field>
-			<field name="_btnSource">document.getAnonymousElementByAttribute(this, 'anonid', 'btnsource');</field>
 			<field name="_btnUninstall">document.getAnonymousElementByAttribute(this, 'anonid', 'btnuninstall');</field>
 			
 			<constructor><![CDATA[
@@ -133,73 +132,7 @@
 					this._btnUninstall.hidden = this._btnEdit.hidden = true;
 				}
 			]]></constructor>
-			<method name="_toggle">
-				<body><![CDATA[
-					this.activated = !this.activated;
-					let event = document.createEvent("Events");
-					event.initEvent("change", true, true);
-					this.dispatchEvent(event);
-				]]></body>
-			</method>
-			<method name="_uninstall">
-				<body><![CDATA[
-				if (this.getAttribute('managed') == 'true') {
-					return;
-				}
-				let prompter = {};
-				Components.utils.import('resource://dta/prompts.jsm', prompter);
-				let plugins = {};
-				Components.utils.import('resource://dtaac/plugins.jsm', plugins);
-				
-				]]>
-				if (!prompter.confirmYN(window, '&ac.plugin.uninstalltitle;', '&ac.plugin.uninstallquestion;')) {
-					plugins.uninstallPlugin(this.getAttribute('plugin'));
-					prompter.alert(window, '&ac.plugin.uninstalltitle;', '&ac.plugin.uninstalled;');
-				}
-				<![CDATA[
-				
-				]]></body>
-			</method>
-			<method name="_showSource">
-				<body><![CDATA[
-				let _m = ('DTA_Mediator' in window) ? DTA_Mediator : DTA.Mediator;
-				if (this.getAttribute('file')) {
-					_m.open('file://' + this.getAttribute('file'));
-				}
-				else {
-					_m.open('data:text/plain,' + this.getAttribute('source'));
-				}
-				]]></body>
-			</method>
-			<method name="_editSource">
-				<body><![CDATA[
-				acPlugins.showInEditor(this.getAttribute('file'));
-				]]></body>
-			</method>
 		</implementation>
-		<handlers>
-			<handler event="click"><![CDATA[
-				switch (event.originalTarget.getAttribute('anonid')) {
-				case 'btnsource':
-					this._showSource();
-					break;
-				case 'btnedit':
-					this._editSource();
-					break;
-				case 'btntoggle':
-					this._toggle();
-					break;
-				case 'btnuninstall':
-					this._uninstall();
-					break;
-				default:
-					// allow event propagation
-					return;
-				}
-				event.preventDefault();
-				event.stopPropagation();
-			]]></handler>
-		</handlers>	
 	</binding>
 	<binding id="acplugin-selected-active" extends="chrome://dtaac/content/bindings.xml#acplugin-selected">
 		<content>
@@ -207,11 +140,11 @@
 				<xul:acplugininner xbl:inherits="prefix,date,position,priority,match,ptype,activated,managed,author" anonid="inner" flex="1"/>
 				<xul:hbox>
 					<xul:spacer flex="10"/>
-					<xul:button anonid="btnsource" label="&ac.plugin.showsource;"/>
-					<xul:button anonid="btnedit" label="&ac.plugin.editsource;"/>
+					<xul:button command="acCmdPluginShowSource" label="&ac.plugin.showsource;" />
+					<xul:button command="acCmdPluginEditSource" label="&ac.plugin.editsource;" anonid="btnedit" />
 					<xul:spacer flex="1"/>
-					<xul:button class="acplugin-deactivate" anonid="btntoggle" label="&ac.plugin.deactivate;"/>
-					<xul:button class="acplugin-uninstall" label="&ac.plugin.uninstall;" anonid="btnuninstall" xbl:inherits="disabled=managed"/>
+					<xul:button command="acCmdPluginDeactivate" label="&ac.plugin.deactivate;" />
+					<xul:button command="acCmdPluginUninstall" label="&ac.plugin.uninstall;" anonid="btnuninstall" xbl:inherits="disabled=managed"/>
 				</xul:hbox>
 			</xul:vbox>
 		</content>
@@ -222,11 +155,11 @@
 				<xul:acplugininner xbl:inherits="prefix,date,position,priority,match,ptype,activated,managed,author" anonid="inner" flex="1"/>
 				<xul:hbox>
 					<xul:spacer flex="10"/>
-					<xul:button anonid="btnsource" label="&ac.plugin.showsource;"/>
-					<xul:button anonid="btnedit" label="&ac.plugin.editsource;"/>
+					<xul:button command="acCmdPluginShowSource" label="&ac.plugin.showsource;" />
+					<xul:button command="acCmdPluginEditSource" label="&ac.plugin.editsource;" anonid="btnedit" />
 					<xul:spacer flex="1"/>
-					<xul:button class="acplugin-activate" anonid="btntoggle" label="&ac.plugin.activate;"/>
-					<xul:button class="acplugin-uninstall" label="&ac.plugin.uninstall;" anonid="btnuninstall" xbl:inherits="disabled=managed"/>
+					<xul:button command="acCmdPluginActivate"  label="&ac.plugin.activate;" />
+					<xul:button command="acCmdPluginUninstall" label="&ac.plugin.uninstall;" anonid="btnuninstall" xbl:inherits="disabled=managed"/>
 				</xul:hbox>
 			</xul:vbox>
 		</content>
