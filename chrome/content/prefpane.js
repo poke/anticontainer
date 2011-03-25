@@ -76,7 +76,7 @@ var acPlugins = {
 		if (!(p instanceof Array)) {
 			p = [];
 		}
-		let plugs = [];			
+		let plugs = [];
 		for (let f in this._plugins.enumerate(true)) {
 			let date = new Date(f.date);
 			date = zeropad(date.getUTCFullYear(), 4)
