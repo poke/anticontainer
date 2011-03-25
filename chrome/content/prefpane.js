@@ -63,6 +63,11 @@ var acPlugins = {
 			$('acCmdPluginUninstall').setAttribute('disabled', item.getAttribute('managed') == 'true');
 			$('acCmdPluginEditSource').setAttribute('disabled', item.getAttribute('managed') == 'true');
 		}, false);
+		$('acPluginContext').addEventListener('popupshowing', function() {
+			let item = self._list.selectedItem;
+			$('acMenuPluginActivate').setAttribute('hidden', item.activated);
+			$('acMenuPluginDeactivate').setAttribute('hidden', !item.activated);
+		}, false);
 		$('acCmdPluginActivate').addEventListener('command', function(event) {
 			let item = self._list.selectedItem;
 			if (!item.activated) {

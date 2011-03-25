@@ -58,6 +58,17 @@
 			<command id="acCmdPluginEditSource" />
 		</commandset>
 
+		<popupset>
+			<menupopup id="acPluginContext">
+				<menuitem command="acCmdPluginActivate" label="&ac.plugin.activate;" id="acMenuPluginActivate" />
+				<menuitem command="acCmdPluginDeactivate" label="&ac.plugin.deactivate;" id="acMenuPluginDeactivate" />
+				<menuitem command="acCmdPluginUninstall" label="&ac.plugin.uninstall;" />
+				<menuseparator />
+				<menuitem command="acCmdPluginShowSource" label="&ac.plugin.showsource;" />
+				<menuitem command="acCmdPluginEditSource" label="&ac.plugin.editsource;" />
+			</menupopup>
+		</popupset>
+
 		<prefpane id="acPane" flex="1" label="&ac.panetitle;">
 			<script type="text/javascript" src="chrome://dtaac/content/prefpane.js"/>
 			
@@ -75,6 +86,7 @@
 						preference="acPrefPlugins"
 						onsyncfrompreference="return acPlugins.syncFrom();"
 						onsynctopreference="return acPlugins.syncTo();"
+						context="acPluginContext"
 					/>
 					<hbox>
 						<spacer flex="1"/>
