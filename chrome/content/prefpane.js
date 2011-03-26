@@ -92,10 +92,14 @@ var acPlugins = {
 		}, false);
 		$('acCmdPluginUninstall').addEventListener('command', function(event) {
 			let item = self._list.selectedItem;
+			let locales = {
+				uninstalltitle: item._lc_uninstalltitle,
+				uninstallquestion: item._lc_uninstallquestion,
+				uninstalled: item._lc_uninstalled }
 			if (item.getAttribute('managed') != 'true') {
-				if (!Prompts.confirmYN(window, _('ac-pluginuninstalltitle'), _('ac-pluginuninstallquestion'))) {
+				if (!Prompts.confirmYN(window, locales.uninstalltitle, locales.uninstallquestion)) {
 					self._plugins.uninstallPlugin(item.getAttribute('plugin'));
-					Prompts.alert(window, _('ac-pluginuninstalltitle'), _('ac-pluginuninstalled'));
+					Prompts.alert(window, locales.uninstalltitle, locales.uninstalled);
 				}
 			}
 		}, false);

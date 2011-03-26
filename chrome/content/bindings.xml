@@ -126,6 +126,9 @@
 		<implementation>
 			<field name="_btnEdit">document.getAnonymousElementByAttribute(this, 'anonid', 'btnedit');</field>
 			<field name="_btnUninstall">document.getAnonymousElementByAttribute(this, 'anonid', 'btnuninstall');</field>
+			<field name="_lc_uninstalltitle">"&ac.plugin.uninstalltitle;"</field>
+			<field name="_lc_uninstallquestion">"&ac.plugin.uninstallquestion;"</field>
+			<field name="_lc_uninstalled">"&ac.plugin.uninstalled;"</field>
 			
 			<constructor><![CDATA[
 				if (this.getAttribute('managed') == 'true') {
